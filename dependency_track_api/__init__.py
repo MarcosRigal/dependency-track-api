@@ -1,11 +1,13 @@
 """Main Dependency Track API Class."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 from typing import Dict
 
 import requests
+
+from .exceptions import DependencyTrackApiError
 
 
 class DependencyTrack:
@@ -15,17 +17,17 @@ class DependencyTrack:
     This class provides methods to interact with the Dependency Track API.
     """
 
-    def __init__(self, url: str, api_key: str):
+    def __init__(self, api_host: str, api_key: str):
         """
         Dependency Track API Class Constructor.
 
         Args:
-            url (str): The URL of the Dependency Track instance.
+            api_host (str): The host where is located the Dependency Track API instance.
             api_key (str): The API key for accessing the Dependency Track API.
         """
-        self.host = url
+        self.api_host = api_host
         self.api_key = api_key
-        self.api = self.host + "/api/v1"
+        self.api_base_url = self.api_host + "/api/v1"
         self.session = requests.Session()
         self.session.headers.update({"X-Api-Key": f"{self.api_key}"})
 
@@ -56,5 +58,8 @@ class DependencyTrack:
                 - timestamp (str): The timestamp when the framework information was retrieved.
                 - uuid (str): The UUID of the framework instance.
         """
-        response = self.session.get(f"{self.host}/api/version")
-        return response.json()
+        response = self.session.get(f"{self.api_host}/api/version")
+        if response.status_code == 200:
+            return response.json()
+        description = "Error while quering the api."
+        raise DependencyTrackApiError(description, response)
