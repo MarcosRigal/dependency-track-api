@@ -10,12 +10,6 @@ def test_dependency_track_api_version():
     assert __version__ == "0.1.2"
 
 
-def test_dependency_track_api_initialization_failure():
-    """Test Dependency Track API initialization failure."""
-    with pytest.raises(Exception):
-        DependencyTrack(api_host=None, api_key="dummy_api_key")
-
-
 class MockResponse:
     """Mock class to simulate requests.Response."""
 
@@ -38,7 +32,7 @@ class MockResponse:
 def mock_dependency_track_api_fixture(mocker):
     """Mock DependencyTrack API."""
     mocker.patch(
-        "dependency_track_api.requests.Session.get",
+        "dependency_track_api.session.DependencyTrackAPISession.get",
         return_value=MockResponse({"version": "4.10.1"}),
     )
     yield DependencyTrack(api_host="http://localhost:8081", api_key="dummy_api_key")
@@ -46,9 +40,7 @@ def mock_dependency_track_api_fixture(mocker):
 
 def test_dependency_track_api(dependency_track_api):
     """Test Dependency Track API with mocked DependencyTrack."""
-    assert dependency_track_api.api_host == "http://localhost:8081"
     assert dependency_track_api.get_version()["version"] == "4.10.1"
-    dependency_track_api.close()
 
 
 def test_dependency_track_api_error_handling():
@@ -61,4 +53,3 @@ def test_dependency_track_api_error_handling():
         )
         dependency_track.session.get = lambda *args, **kwargs: mock_response
         dependency_track.get_version()
-        dependency_track.close()

@@ -5,13 +5,13 @@ __version__ = "0.1.2"
 
 from typing import Dict
 
-import requests
-
 from .access_control_list import AccessControlList
+from .analysis import Analysis
 from .exceptions import DependencyTrackApiError
+from .session import DependencyTrackAPISession
 
 
-class DependencyTrack(AccessControlList):
+class DependencyTrack(AccessControlList, Analysis):
     """
     Main Dependency Track API Class.
 
@@ -26,20 +26,11 @@ class DependencyTrack(AccessControlList):
             api_host (str): The host where is located the Dependency Track API instance.
             api_key (str): The API key for accessing the Dependency Track API.
         """
-        super().__init__(api_host, api_key)
-        self.api_host = api_host
-        self.api_key = api_key
-        self.api_base_url = self.api_host + "/api"
-        self.session = requests.Session()
-        self.session.headers.update({"X-Api-Key": f"{self.api_key}"})
-
-    def close(self) -> None:
-        """
-        Close Dependency Track API Session.
-
-        This method closes the session used to interact with the Dependency Track API.
-        """
-        self.session.close()
+        self.session = DependencyTrackAPISession(
+            session_api_host=api_host, session_api_key=api_key
+        )
+        AccessControlList.__init__(self, session=self.session)
+        Analysis.__init__(self, session=self.session)
 
     def get_version(self) -> Dict:
         """
@@ -60,7 +51,7 @@ class DependencyTrack(AccessControlList):
                 - timestamp (str): The timestamp when the framework information was retrieved.
                 - uuid (str): The UUID of the framework instance.
         """
-        response = self.session.get(f"{self.api_host}/version")
+        response = self.session.get(f"{self.session.api_base_url}/version")
 
         if response.status_code == 200:
             return response.json()

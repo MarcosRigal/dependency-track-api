@@ -1,43 +1,36 @@
 """Access Control List Module."""
 
 from typing import Dict, List
-from uuid import UUID
-
-import requests
 
 from .exceptions import DependencyTrackApiError
+from .session import DependencyTrackAPISession
 
 
 class AccessControlList:
     """Access Control List Class."""
 
-    def __init__(self, api_host: str, api_key: str):
+    def __init__(self, session: DependencyTrackAPISession):
         """
         Access Control List Class Constructor.
 
         Args:
-            api_host (str): The host where is located the Dependency Track API instance.
-            api_key (str): The API key for accessing the Dependency Track API.
+            session (DependencyTrackAPISession): The session object to interact with the API.
         """
-        self.api_host = api_host
-        self.api_key = api_key
-        self.api_base_url = self.api_host + "/api"
-        self.session = requests.Session()
-        self.session.headers.update({"X-Api-Key": f"{self.api_key}"})
+        self.session = session
 
-    def add_acl_mapping(self, team: UUID, project: UUID) -> Dict:
+    def add_acl_mapping(self, team: str, project: str) -> Dict:
         """
         Add an Access Control List mapping.
 
         Args:
-            team (UUID): The UUID of the team.
-            project (UUID): The UUID of the project.
+            team (str): The UUID of the team.
+            project (str): The UUID of the project.
 
         Returns:
             dict: The response data.
         """
         response = self.session.put(
-            f"{self.api_base_url}/v1/acl/mapping",
+            f"{self.session.api_base_url}/v1/acl/mapping",
             json={
                 "team": str(team),
                 "project": str(project),
@@ -55,13 +48,13 @@ class AccessControlList:
         description = descriptions.get(response.status_code, "Unknown error")
         raise DependencyTrackApiError(description, response)
 
-    def delete_mapping(self, team_uuid: UUID, project_uuid: UUID) -> None:
+    def delete_mapping(self, team_uuid: str, project_uuid: str) -> None:
         """
         Remove an Access Control List mapping.
 
         Args:
-            team_uuid (UUID): The UUID of the team to delete the mapping for.
-            project_uuid (UUID): The UUID of the project to delete the mapping for.
+            team_uuid (str): The UUID of the team to delete the mapping for.
+            project_uuid (str): The UUID of the project to delete the mapping for.
 
         Raises:
             DependencyTrackApiError: If an error occurs during the request and the status
@@ -69,7 +62,7 @@ class AccessControlList:
             and the response object.
         """
         response = self.session.delete(
-            f"{self.api_base_url}/v1/acl/mapping/team/{team_uuid}/project/{project_uuid}"
+            f"{self.session.api_base_url}/v1/acl/mapping/team/{team_uuid}/project/{project_uuid}"
         )
 
         if response.status_code == 401:
@@ -87,13 +80,13 @@ class AccessControlList:
             )
 
     def retrieve_projects_for_team(
-        self, team_uuid: UUID, exclude_inactive: bool = False, only_root: bool = False
+        self, team_uuid: str, exclude_inactive: bool = False, only_root: bool = False
     ) -> List[str]:
         """
         Return the projects assigned to the specified team.
 
         Args:
-            team_uuid (UUID): The UUID of the team to retrieve mappings for.
+            team_uuid (str): The UUID of the team to retrieve mappings for.
             exclude_inactive (bool): Optionally excludes inactive projects from being returned.
             only_root (bool): Optionally excludes children projects from being returned.
 
@@ -101,7 +94,9 @@ class AccessControlList:
             list: List of project UUIDs.
         """
         params = {"excludeInactive": exclude_inactive, "onlyRoot": only_root}
-        response = self.session.get(f"{self.api_base_url}/v1/acl/team/{team_uuid}", params=params)
+        response = self.session.get(
+            f"{self.session.api_base_url}/v1/acl/team/{team_uuid}", params=params
+        )
         if response.status_code == 200:
             return response.json()
 

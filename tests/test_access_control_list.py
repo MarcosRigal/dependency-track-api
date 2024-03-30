@@ -1,4 +1,4 @@
-"""Access Control List tests."""
+"""Test for the access control list module."""
 
 from unittest.mock import MagicMock
 
@@ -29,7 +29,7 @@ class MockResponse:
 def mock_dependency_track_api_fixture(mocker):
     """Mock DependencyTrack API."""
     mocker.patch(
-        "dependency_track_api.requests.Session.put",
+        "dependency_track_api.session.requests.Session.put",
         return_value=MockResponse(
             {
                 "team": "d15a83fd-da70-9387-a698-6e9bc1ec1591",
