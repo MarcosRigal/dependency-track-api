@@ -18,8 +18,6 @@ The Dependency Track API Wrapper is a Python library that provides a convenient 
 
 You can install the Dependency Track API Wrapper using pip:
 
-```bash
-pip install dependency-track-api
 """
 authors = ["MarcosRigal <riveragavilanmarcos@gmail.com>"]
 
