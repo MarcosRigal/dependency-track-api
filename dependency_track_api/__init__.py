@@ -7,10 +7,11 @@ from typing import Dict
 
 import requests
 
+from .access_control_list import AccessControlList
 from .exceptions import DependencyTrackApiError
 
 
-class DependencyTrack:
+class DependencyTrack(AccessControlList):
     """
     Main Dependency Track API Class.
 
@@ -25,9 +26,10 @@ class DependencyTrack:
             api_host (str): The host where is located the Dependency Track API instance.
             api_key (str): The API key for accessing the Dependency Track API.
         """
+        super().__init__(api_host, api_key)
         self.api_host = api_host
         self.api_key = api_key
-        self.api_base_url = self.api_host + "/api/v1"
+        self.api_base_url = self.api_host + "/api"
         self.session = requests.Session()
         self.session.headers.update({"X-Api-Key": f"{self.api_key}"})
 
@@ -58,8 +60,10 @@ class DependencyTrack:
                 - timestamp (str): The timestamp when the framework information was retrieved.
                 - uuid (str): The UUID of the framework instance.
         """
-        response = self.session.get(f"{self.api_host}/api/version")
+        response = self.session.get(f"{self.api_host}/version")
+
         if response.status_code == 200:
             return response.json()
+
         description = "Error while quering the api."
         raise DependencyTrackApiError(description, response)
