@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dependency-track-api"
 version = "0.1.0"
-packages = [ {include = "./src"}]
+packages = [ {include = "./dependency_track_api"}]
 description = "A wrapper for the Dependency Track REST API."
 authors = ["MarcosRigal <riveragavilanmarcos@gmail.com>"]
 readme = "README.md"
@@ -105,7 +105,7 @@ commands =
     pytest \
         --junitxml={toxinidir}/junit-reports/unit.xml \
         -o junit_family=xunit2 \
-        --cov={toxinidir}/src \
+        --cov={toxinidir}/dependency_track_api \
         --cov-report=term-missing \
         --cov-fail-under=0 \
         -s -vvv \
@@ -119,12 +119,12 @@ skip_install = True
 allowlist_externals = poetry,pydocstyle,flake8,black,isort,mypy,pylint
 commands =
     poetry install -E tox-lint
-    pydocstyle {toxinidir}/src
-    flake8 {toxinidir}/src --count --max-line-length 99 --ignore E203,W503
-    black {toxinidir}/src
-    isort {toxinidir}/src
-    mypy {toxinidir}/src
-    pylint {toxinidir}/src
+    pydocstyle {toxinidir}/dependency_track_api
+    flake8 {toxinidir}/dependency_track_api --count --max-line-length 99 --ignore E203,W503
+    black {toxinidir}/dependency_track_api
+    isort {toxinidir}/dependency_track_api
+    mypy {toxinidir}/dependency_track_api
+    pylint {toxinidir}/dependency_track_api
 
     pydocstyle {toxinidir}/tests
     flake8 {toxinidir}/tests --count --max-line-length 99 --ignore E203,W503

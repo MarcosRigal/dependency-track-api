@@ -1,5 +1,8 @@
 """Main Dependency Track API Class."""
 
+__version__ = "0.1.1"
+
+
 from typing import Dict
 
 import requests

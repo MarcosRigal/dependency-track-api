@@ -3,8 +3,7 @@
 import pytest
 import requests_mock
 
-from src import __version__
-from src.dependency_track_api import DependencyTrack
+from dependency_track_api import DependencyTrack, __version__
 
 
 @pytest.fixture(name="dependency_track_api")
@@ -17,7 +16,7 @@ def mock_dependency_track_api_fixture():
 
 def test_dependency_track_api_version():
     """Test Dependency Track API Version."""
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.1.1"
 
 
 def test_dependency_track_api_with_mock(dependency_track_api):
