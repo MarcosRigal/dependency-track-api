@@ -7,7 +7,7 @@ from dependency_track_api import DependencyTrack, DependencyTrackApiError, __ver
 
 def test_dependency_track_api_version():
     """Test Dependency Track API Version."""
-    assert __version__ == "0.1.2"
+    assert __version__ == "0.1.4"
 
 
 class MockResponse:

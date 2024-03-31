@@ -1,6 +1,6 @@
 """Main Dependency Track API Class."""
 
-__version__ = "0.1.2"
+__version__ = "0.1.4"
 
 
 from typing import Dict

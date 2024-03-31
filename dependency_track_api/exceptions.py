@@ -9,5 +9,4 @@ class DependencyTrackApiError(Exception):
         super().__init__(description)
         self.description = description
         self.response = response
-        self.message = response.json().get("message", "Unknown error")
         self.status_code = response.status_code
