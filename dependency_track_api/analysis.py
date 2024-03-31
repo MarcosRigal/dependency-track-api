@@ -2,21 +2,24 @@
 
 from typing import Dict
 
+from requests import Session
+
 from .exceptions import DependencyTrackApiError
-from .session import DependencyTrackAPISession
 
 
 class Analysis:
     """Analysis Class."""
 
-    def __init__(self, session: DependencyTrackAPISession):
+    def __init__(self, session: Session, api_base_url: str):
         """
         Analysis Class Constructor.
 
         Args:
-            session (DependencyTrackAPISession): The session object to interact with the API.
+            session (Session): The session object to interact with the API.
+            api_base_url (str): The base URL of the API.
         """
         self.session = session
+        self.api_base_url = api_base_url
 
     def retrieve_analysis(self, project: str, component: str, vulnerability: str) -> Dict:
         """
@@ -31,7 +34,7 @@ class Analysis:
             dict: The analysis data.
         """
         params = {"project": project, "component": component, "vulnerability": vulnerability}
-        response = self.session.get(f"{self.session.api_base_url}/v1/analysis", params=params)
+        response = self.session.get(f"{self.api_base_url}/v1/analysis", params=params)
         if response.status_code == 200:
             return response.json()
 
@@ -54,7 +57,7 @@ class Analysis:
             dict: The updated analysis data.
         """
         response = self.session.put(
-            f"{self.session.api_base_url}/v1/analysis",
+            f"{self.api_base_url}/v1/analysis",
             json=analysis_request,
         )
         if response.status_code == 200:

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dependency-track-api"
-version = "0.1.2"
+version = "0.1.3"
 packages = [ {include = "./dependency_track_api"}]
 description = "A wrapper for the Dependency Track REST API."
 authors = ["MarcosRigal <riveragavilanmarcos@gmail.com>"]
