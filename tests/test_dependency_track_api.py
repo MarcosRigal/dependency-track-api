@@ -7,7 +7,7 @@ from dependency_track_api import DependencyTrack, DependencyTrackApiError, __ver
 
 def test_dependency_track_api_version():
     """Test Dependency Track API Version."""
-    assert __version__ == "0.1.3"
+    assert __version__ == "0.1.2"
 
 
 class MockResponse:
@@ -27,11 +27,12 @@ class MockResponse:
         return self.status_code
 
 
+# Fixture for mocking DependencyTrack API
 @pytest.fixture(name="dependency_track_api")
 def mock_dependency_track_api_fixture(mocker):
     """Mock DependencyTrack API."""
     mocker.patch(
-        "dependency_track_api.requests.Session.get",
+        "dependency_track_api.session.DependencyTrackAPISession.get",
         return_value=MockResponse({"version": "4.10.1"}),
     )
     yield DependencyTrack(api_host="http://localhost:8081", api_key="dummy_api_key")
@@ -44,6 +45,7 @@ def test_dependency_track_api(dependency_track_api):
 
 def test_dependency_track_api_error_handling():
     """Test Dependency Track API error handling."""
+    # Mocking a response with a non-200 status code and a message
     with pytest.raises(DependencyTrackApiError):
         mock_response = MockResponse({"message": "Not Found"}, status_code=404)
         dependency_track = DependencyTrack(

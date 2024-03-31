@@ -2,24 +2,21 @@
 
 from typing import Dict, List
 
-from requests import Session
-
 from .exceptions import DependencyTrackApiError
+from .session import DependencyTrackAPISession
 
 
 class AccessControlList:
     """Access Control List Class."""
 
-    def __init__(self, session: Session, api_base_url: str):
+    def __init__(self, session: DependencyTrackAPISession):
         """
         Access Control List Class Constructor.
 
         Args:
-            session (Session): The session object to interact with the API.
-            api_base_url (str): The base URL of the API.
+            session (DependencyTrackAPISession): The session object to interact with the API.
         """
         self.session = session
-        self.api_base_url = api_base_url
 
     def add_acl_mapping(self, team: str, project: str) -> Dict:
         """
@@ -33,7 +30,7 @@ class AccessControlList:
             dict: The response data.
         """
         response = self.session.put(
-            f"{self.api_base_url}/v1/acl/mapping",
+            f"{self.session.api_base_url}/v1/acl/mapping",
             json={
                 "team": str(team),
                 "project": str(project),
@@ -65,7 +62,7 @@ class AccessControlList:
             and the response object.
         """
         response = self.session.delete(
-            f"{self.api_base_url}/v1/acl/mapping/team/{team_uuid}/project/{project_uuid}"
+            f"{self.session.api_base_url}/v1/acl/mapping/team/{team_uuid}/project/{project_uuid}"
         )
 
         if response.status_code == 401:
@@ -97,7 +94,9 @@ class AccessControlList:
             list: List of project UUIDs.
         """
         params = {"excludeInactive": exclude_inactive, "onlyRoot": only_root}
-        response = self.session.get(f"{self.api_base_url}/v1/acl/team/{team_uuid}", params=params)
+        response = self.session.get(
+            f"{self.session.api_base_url}/v1/acl/team/{team_uuid}", params=params
+        )
         if response.status_code == 200:
             return response.json()
 
