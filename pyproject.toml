@@ -12,13 +12,13 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 # Dependencies should go here
-python = ">=3.8,<=3.12"
+python = ">=3.10,<=3.14"
 tomli = "*"
 
 # tox-test extra dependencies
-coverage = {version = "6.2", optional = true, extras = ["toml"]}
+coverage = {version = "^7.0", optional = true, extras = ["toml"]}
 freezegun = {version = "1.1.0", optional = true}
-pytest = {version = "^5.0.0", optional = true}
+pytest = {version = "^7.4", optional = true}
 pytest-cov = {version = "4.0.0", optional = true}
 pytest-emoji = {version = "0.2.0", optional = true}
 pytest-timeout = {version = "2.1.0", optional = true}
@@ -78,6 +78,7 @@ lines_between_types = 1
 profile = "black"
 
 [tool.mypy]
+python_version = "3.10"
 ignore_missing_imports = true
 
 [tool.pylint."MESSAGES CONTROL"]
@@ -91,7 +92,7 @@ exclude_lines = ["raise NotImplementedError"]
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py38,py39,py310,py311,py312,lint
+envlist = py310,py311,py312,py313,py314,lint
 skip_missing_interpreters = true
 
 [testenv]
@@ -114,6 +115,7 @@ commands =
         {posargs:{toxinidir}/tests/}
 
 [testenv:lint]
+basepython = python3.10
 whitelist_externals = poetry
 skip_install = True
 allowlist_externals = poetry,pydocstyle,flake8,black,isort,mypy,pylint
@@ -123,13 +125,13 @@ commands =
     flake8 {toxinidir}/dependency_track_api --count --max-line-length 99 --ignore E203,W503
     black {toxinidir}/dependency_track_api
     isort {toxinidir}/dependency_track_api
-    mypy {toxinidir}/dependency_track_api
+    mypy --no-site-packages {toxinidir}/dependency_track_api
     pylint {toxinidir}/dependency_track_api
 
     pydocstyle {toxinidir}/tests
     flake8 {toxinidir}/tests --count --max-line-length 99 --ignore E203,W503
     black {toxinidir}/tests
     isort {toxinidir}/tests
-    mypy {toxinidir}/tests
+    mypy --no-site-packages {toxinidir}/tests
     pylint {toxinidir}/tests
 """
